@@ -8,7 +8,7 @@ import Signup from './Signup'
 
 function UserRoute({ children, ...rest }) {
   let { account, accountLoading, user, userLoading } = useWeb3Context()
-  console.log(user, 'User', account)
+  // console.log(user, 'User', account)
   if (accountLoading) {
     return 'Loading the data from metamask.'
   }

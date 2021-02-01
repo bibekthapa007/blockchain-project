@@ -24,6 +24,14 @@
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
+const HDWalletProvider = require('truffle-hdwallet-provider-privkey');
+const privateKey =
+  'feb614ccddc5fa28d17cca9bce4ea7133a0afcc29986044eac03420740546f38';
+const endpointUrl =
+  'https://kovan.infura.io/v3/cc573b5d72d046bf940d34257faa7629';
+const seedPrase = `sister mule snap bright waste fork across mushroom fold taste worry canoe`;
+const rinkebyUrl = `https://rinkeby.infura.io/v3/cc573b5d72d046bf940d34257faa7629`;
+
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -45,13 +53,34 @@ module.exports = {
     development: {
       host: '127.0.0.1', // Localhost (default: none)
       port: 7545, // Standard Ethereum port (default: none)
-      network_id: '*', // Any network (default: none)
+      network_id: '5777', // Any network (default: none)
+    },
+    kovan: {
+      provider: function () {
+        return new HDWalletProvider(
+          //private keys array
+          [privateKey],
+          //url to ethereum node
+          endpointUrl
+        );
+      },
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      network_id: 42, // Any network (default: none)
+      gas: 5500000, // Ropsten has a lower block limit than mainnet
+    },
+    rinkeby: {
+      provider: () => new HDWalletProvider([privateKey], rinkebyUrl),
+      network_id: 4, // Ropsten's id
+      gas: 5500000, // Ropsten has a lower block limit than mainnet
+      confirmations: 2, // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
     // network_id: 1342,       // Custom network
-    // gas: 8500000,           // Gas sent with each transaction (default: ~6700000)
+    gas: 8500000, // Gas sent with each transaction (default: ~6700000)
     // gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
     // from: <address>,        // Account to send txs from (default: accounts[0])
     // websocket: true        // Enable EventEmitter interface for web3 (default: false)
@@ -93,4 +122,4 @@ module.exports = {
       // }
     },
   },
-}
+};

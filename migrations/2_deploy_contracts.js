@@ -1,7 +1,7 @@
-const Todos = artifacts.require('Todos');
+const Products = artifacts.require('ProductContract');
 const Users = artifacts.require('UserContract');
 
 module.exports = function (deployer) {
   deployer.deploy(Users);
-  deployer.deploy(Todos);
+  deployer.deploy(Products);
 };

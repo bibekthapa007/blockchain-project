@@ -3,18 +3,19 @@ pragma solidity >=0.4.22 <0.9.0;
 
 /// @dev basic authentication contract
 /// @notice tracks list of all users
+
 contract UserContract {
   struct User {
-    bytes32 name;
+    string name;
     uint256 created_at;
   }
 
   event UserCreated(
     address indexed _address,
-    bytes32 _name,
+    string _name,
     uint256 _created_at
   );
-  event UserUpdated(address indexed _address, bytes32 _name);
+  event UserUpdated(address indexed _address, string _name);
   event UserDeleted(address indexed _address);
 
   mapping(address => User) private users;
@@ -23,20 +24,20 @@ contract UserContract {
   address[] public allUsers;
   modifier onlyExistingUser {
     // Check if user exists or terminate
-
-    require(!(users[msg.sender].name == 0x0));
+    bytes memory tempName = bytes(users[msg.sender].name); // Uses memory
+    require(tempName.length != 0, 'User not exit.');
     _;
   }
 
-  modifier onlyValidName(bytes32 name) {
+  modifier onlyValidName(string memory name) {
     // Only valid names allowed
-
-    require(!(name == 0x0), 'Name not valid');
+    bytes memory tempName = bytes(name);
+    require(tempName.length != 0, 'Name not valid');
     _;
   }
 
   /// @return username
-  function login() public view onlyExistingUser returns (bytes32) {
+  function login() public view onlyExistingUser returns (string memory) {
     return (users[msg.sender].name);
   }
 
@@ -46,38 +47,33 @@ contract UserContract {
   /// If no, check if name was sent
   /// If yes, create and return user
   /// @return username of created user
-  function signup(bytes32 name)
+  function signup(string memory name)
     public
     payable
     onlyValidName(name)
-    returns (bytes32)
+    returns (string memory)
   {
-    if (users[msg.sender].name == 0x0) {
-      users[msg.sender].name = name;
-      users[msg.sender].created_at = block.timestamp;
-
-      allUsers.push(msg.sender);
-      emit UserCreated(msg.sender, name, block.timestamp);
-      return (users[msg.sender].name);
-    }
-
+    bytes memory tempName = bytes(users[msg.sender].name);
+    require(tempName.length == 0, 'User already registered.');
+    users[msg.sender].name = name;
+    users[msg.sender].created_at = block.timestamp;
+    allUsers.push(msg.sender);
+    emit UserCreated(msg.sender, name, block.timestamp);
     return (users[msg.sender].name);
   }
 
-  function update(bytes32 name)
+  function update(string memory name)
     public
     payable
     onlyValidName(name)
     onlyExistingUser
-    returns (bytes32 _username)
+    returns (string memory _username)
   {
     // Update user name.
 
-    if (users[msg.sender].name != 0x0) {
-      users[msg.sender].name = name;
-      emit UserUpdated(msg.sender, name);
-      return (users[msg.sender].name);
-    }
+    users[msg.sender].name = name;
+    emit UserUpdated(msg.sender, name);
+    return (users[msg.sender].name);
   }
 
   /// @dev destroy existing username
@@ -87,6 +83,7 @@ contract UserContract {
   }
 
   function checkUser() public view returns (bool) {
-    return !(users[msg.sender].name == 0x0);
+    bytes memory tempName = bytes(users[msg.sender].name);
+    return (tempName.length != 0);
   }
 }

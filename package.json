@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "blockchain": "truffle compile && truffle migrate --reset",
+    "migrateContract": "cp -r ./build/contracts ./client/src",
+    "frontend": "cd ./client && npm run start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,5 +16,9 @@
     "nodemon": "^2.0.7",
     "truffle": "^5.1.63",
     "truffle-contract": "^4.0.31"
+  },
+  "dependencies": {
+    "truffle-hdwallet-provider": "^1.0.17",
+    "truffle-hdwallet-provider-privkey": "^0.3.0"
   }
 }
